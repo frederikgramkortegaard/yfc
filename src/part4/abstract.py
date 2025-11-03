@@ -4,7 +4,7 @@ Abstract Syntax Tree (AST) node definitions.
 Simple AST nodes for basic arithmetic expressions.
 """
 
-from lexer import Token
+from lexer import Token, TokenType  # TokenType will be used in examples later
 
 
 class Expression:
@@ -28,15 +28,13 @@ class BinaryOp(Expression):
 
 # Example: manually building an AST for "2 + 3 * 4"
 if __name__ == "__main__":
-    from lexer import TokenType
-
-    # This represents: 2 + (3 * 4)
+    # Manually build AST for: 2 + (3 * 4)
     ast = BinaryOp(
         left=NumberExpr(Token(TokenType.Number, "2")),
         op=Token(TokenType.Plus, "+"),
         right=BinaryOp(
             left=NumberExpr(Token(TokenType.Number, "3")),
-            op=Token(TokenType.Star, "*"),
+            op=Token(TokenType.Mul, "*"),
             right=NumberExpr(Token(TokenType.Number, "4"))
         )
     )

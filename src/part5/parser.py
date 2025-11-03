@@ -13,8 +13,8 @@ from abstract import Expression, NumberExpr, BinaryOp
 PRECEDENCE_MAP = {
     TokenType.Plus: 20,
     TokenType.Minus: 20,
-    TokenType.Star: 40,
-    TokenType.Slash: 40,
+    TokenType.Mul: 40,
+    TokenType.Div: 40,
 }
 
 
@@ -68,9 +68,7 @@ class Parser:
             right = self.parse_binary_op(right, next_op)
 
         # Build the binary operation node
-        binary_op = BinaryOp(left, op, right)
-        print(f"Parsed BinaryOp: {op.value} with left={type(left).__name__} right={type(right).__name__}")
-        return binary_op
+        return BinaryOp(left, op, right)
 
     def parse_primary(self) -> Expression:
         """Parse a primary expression (number or parenthesized expression)."""
@@ -87,54 +85,26 @@ class Parser:
             # Grammar: NUMBER
             case TokenType.Number:
                 token = self.consume()
-                num_expr = NumberExpr(token)
-                print(f"Parsed NumberExpr: {token.value}")
-                return num_expr
+                return NumberExpr(token)
 
             case _:
                 raise ParserError(f"Unexpected token: {self.current._type}")
 
 
-# Example usage
+# Example usage - test operator precedence
 if __name__ == "__main__":
     from lexer import Lexer
 
-    # Test 1: Simple addition
-    source = "2 + 3"
-    lexer = Lexer(source)
-    tokens = lexer.lex()
-    parser = Parser(tokens)
-    ast = parser.parse_expression()
-
-    print(f"\nExpression: {source}")
-    print(f"Root: {ast.op.value}")
-    print(f"  Left: {ast.left.value.value}")
-    print(f"  Right: {ast.right.value.value}")
-
-    # Test 2: Operator precedence
+    # Test operator precedence: 2 + 3 * 4
     source = "2 + 3 * 4"
     lexer = Lexer(source)
     tokens = lexer.lex()
     parser = Parser(tokens)
     ast = parser.parse_expression()
 
-    print(f"\nExpression: {source}")
+    print(f"Expression: {source}")
     print(f"Root: {ast.op.value}")
     print(f"  Left: {ast.left.value.value}")
     print(f"  Right: BinaryOp {ast.right.op.value}")
     print(f"    Left: {ast.right.left.value.value}")
     print(f"    Right: {ast.right.right.value.value}")
-
-    # Test 3: Parentheses
-    source = "(2 + 3) * 4"
-    lexer = Lexer(source)
-    tokens = lexer.lex()
-    parser = Parser(tokens)
-    ast = parser.parse_expression()
-
-    print(f"\nExpression: {source}")
-    print(f"Root: {ast.op.value}")
-    print(f"  Left: BinaryOp {ast.left.op.value}")
-    print(f"    Left: {ast.left.left.value.value}")
-    print(f"    Right: {ast.left.right.value.value}")
-    print(f"  Right: {ast.right.value.value}")

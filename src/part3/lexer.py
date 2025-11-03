@@ -13,11 +13,11 @@ class TokenType(Enum):
     Number = auto()
     Plus = auto()
     Minus = auto()
-    Star = auto()
-    Slash = auto()
+    Mul = auto()
+    Div = auto()
     LParen = auto()
     RParen = auto()
-    EOF = auto()
+    Eof = auto()
 
 
 @dataclass
@@ -69,8 +69,8 @@ class Lexer:
                 ')': TokenType.RParen,
                 '+': TokenType.Plus,
                 '-': TokenType.Minus,
-                '*': TokenType.Star,
-                '/': TokenType.Slash,
+                '*': TokenType.Mul,
+                '/': TokenType.Div,
             }
 
             if token_type := single_char_tokens.get(self.current):
@@ -81,7 +81,7 @@ class Lexer:
             raise Exception(f"Unexpected character: '{self.current}'")
 
         # Add EOF token
-        self.tokens.append(Token(TokenType.EOF, ""))
+        self.tokens.append(Token(TokenType.Eof, ""))
         return self.tokens
 
 
